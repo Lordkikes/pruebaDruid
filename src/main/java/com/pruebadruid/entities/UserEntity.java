@@ -28,5 +28,10 @@ public class UserEntity {
 
     private Date birthDate;
 
-
+    public UserEntity(String name, String lastName, String password, Date birthDate) {
+        this.name = name;
+        this.lastName = lastName;
+        this.password = password;
+        this.birthDate = birthDate;
+    }
 }
