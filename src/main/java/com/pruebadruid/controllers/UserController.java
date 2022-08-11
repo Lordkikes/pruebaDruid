@@ -29,26 +29,18 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
         if(StringUtils.isBlank(userDTO.getName()))
             return new ResponseEntity(new Message("The Name is Required"), HttpStatus.BAD_REQUEST);
-        /*if(userDTO.getPrecio()==null || productoDto.getPrecio()<0 )
-            return new ResponseEntity(new Mensaje("el precio debe ser mayor que 0"), HttpStatus.BAD_REQUEST);
-        if(productoService.existsByNombre(productoDto.getNombre()))
-            return new ResponseEntity(new Mensaje("ese nombre ya existe"), HttpStatus.BAD_REQUEST);*/
         UserEntity user = new UserEntity(userDTO.getName(), userDTO.getLastName(), userDTO.getPassword(), userDTO.getBirthDate());
         userService.save(user);
         return new ResponseEntity(new Message("User Created"), HttpStatus.OK);
     }
 
-  /*  @PostMapping("/createUser")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
-        return new ResponseEntity<>(userService.createUser(userDTO), HttpStatus.CREATED);
-    }
-
-
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> deleteUser(@PathVariable(name = "id") Long id){
-        userService.deleteUserById(id);
-        return new ResponseEntity<>("User deleted...", HttpStatus.OK);
+        if(!userService.existsById(id))
+            return new ResponseEntity(new Message("not exists"), HttpStatus.NOT_FOUND);
+        userService.delete(id);
+        return new ResponseEntity(new Message("User deleted"), HttpStatus.OK);
     }
 
-   */
+
 }
