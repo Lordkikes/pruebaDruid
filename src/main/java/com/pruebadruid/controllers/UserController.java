@@ -8,8 +8,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RestController
@@ -26,10 +28,14 @@ public class UserController {
     }
 
     @PostMapping("/create-user")
-    public ResponseEntity<?> createUser(@RequestBody UserDTO userDTO){
+    public ResponseEntity<?> createUser(@Valid @RequestBody UserDTO userDTO, BindingResult result){
+        if (result.hasErrors()){
+            return new ResponseEntity(new Message("Fallo"), HttpStatus.NOT_ACCEPTABLE);
+        }
+
         if(StringUtils.isBlank(userDTO.getName()))
             return new ResponseEntity(new Message("The Name is Required"), HttpStatus.BAD_REQUEST);
-        UserEntity user = new UserEntity(userDTO.getName(), userDTO.getLastName(), userDTO.getPassword(), userDTO.getBirthDate());
+        UserEntity user = new UserEntity(userDTO.getName(), userDTO.getLastName(), userDTO.getEmail(), userDTO.getPassword(), userDTO.getBirthDate());
         userService.save(user);
         return new ResponseEntity(new Message("User Created"), HttpStatus.OK);
     }
